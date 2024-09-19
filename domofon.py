@@ -112,7 +112,7 @@ def handle_message(message):
                 f"ID: {chat_id}"
             )
 
-            user_info_dict[chat_id] = {"first_name": user_first_name, "username": user_username}
+            user_info_dict[str(chat_id)] = {"first_name": user_first_name, "username": user_username}
 
             # Send inline keyboard to admins and store the message ID for each admin and user combination
             buttons = [
@@ -157,7 +157,7 @@ def handle_callback_query(callback_query):
     user_id = data[1]
 
     if action == "allow":
-        if user_id in user_info_dict:
+        if str(user_id) in user_info_dict:
             user = {
                 "id": user_id,
                 "name": user_info_dict[user_id]["first_name"],
