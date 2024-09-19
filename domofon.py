@@ -101,7 +101,7 @@ def handle_message(message):
     elif text == "register":
         if is_user_in_whitelist(chat_id):
             send_message(chat_id, "already", {"keyboard": [["open"]]})
-        if 1:#else:
+        else:
             user_first_name = message["from"]["first_name"]
             user_username = message["from"]["username"]
 
@@ -128,7 +128,7 @@ def handle_message(message):
     elif text == "open":
         if is_user_in_whitelist(chat_id):
             reply_to_message(chat_id, "👋️. Door is open!", message_id, {"keyboard": [["open"]]})
-            subprocess.run(["raspi-gpio", "set", "15", "dl"]) #dh
+            subprocess.run(["raspi-gpio", "set", "15", "dh"])
             
             # Notify admins if the user is not one of the admins
             if str(chat_id) not in ADMIN_IDS:
