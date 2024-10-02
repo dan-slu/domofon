@@ -213,27 +213,35 @@ def main():
     last_watchdog_time = time.time()
 
     offset = None
+    watchdog_counter = 0
     journal.send("!!bot ready!!")
     while True:
 
         #pulling
         updates = get_updates(offset)
-        if updates["result"]:
-            for update in updates["result"]:
-                offset = update["update_id"] + 1
-                if "message" in update:
-                    try:
-                        handle_message(update["message"])
-                    except Exception as e:
-                        journal.send(f"ERROR IN MESSAGE HANGLER: {e}")
-                elif "callback_query" in update:
-                    handle_callback_query(update["callback_query"])
+        try:
+            if updates["result"]:
+                for update in updates["result"]:
+                    offset = update["update_id"] + 1
+                    if "message" in update:
+                        try:
+                            handle_message(update["message"])
+                        except Exception as e:
+                            journal.send(f"ERROR IN MESSAGE HANGLER: {e}")
+                    elif "callback_query" in update:
+                        handle_callback_query(update["callback_query"])
+        except Exception as e:
+            journal.send(f"ERROR OCCURED: {e}")
 
         #watchdog
         if time.time() - last_watchdog_time >= watchdog_interval:
-            journal.send("pik")
             notify("WATCHDOG=1")
-            last_watchdog_time = time.time()
+            
+            watchdog_counter += 1
+            if watchdog_counter % 10 == 0:
+                journal.send("pik")
+                
+            last_watchdog_time = time.time()  # Update the last watchdog time
 
         time.sleep(1)
 
